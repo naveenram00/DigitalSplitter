@@ -19,6 +19,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import org.omg.Messaging.SyncScopeHelper;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TimelineBuilder;
@@ -64,6 +66,7 @@ public class GUI extends Application {
 			JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 	JButton chooseButton = new JButton("Choose");
 	
+		
 	
 	 	private String name;
 	    private Audio audio;
@@ -84,6 +87,7 @@ public class GUI extends Application {
 //			GUI.launch(GUI.class);
 //		}
 	 public void start(Stage stage) {
+		 System.out.println("test");
 		 running = true;
 		// playQue("/Users/naveen/Desktop/Test1/note2.wav");
 		 
