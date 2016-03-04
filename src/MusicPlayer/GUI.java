@@ -87,7 +87,7 @@ public class GUI extends Application {
 //			GUI.launch(GUI.class);
 //		}
 	 public void start(Stage stage) {
-		 System.out.println("test");
+		
 		 running = true;
 		// playQue("/Users/naveen/Desktop/Test1/note2.wav");
 		 
@@ -142,8 +142,8 @@ public class GUI extends Application {
       
          		//.setX()
          
-        /* JScrollPane scroll = new JScrollPane (queDisplay, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-     	queDisplay.setRows(5); */
+        JScrollPane scroll = new JScrollPane (queDisplay, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+     	queDisplay.setRows(5);
 
          // Create the buttons
          Button playButton = ButtonBuilder.create()
@@ -227,7 +227,7 @@ public class GUI extends Application {
 
          // Show the window
          stage.show();
-         //playQue("/Users/naveen/Desktop/Test1/note2.wav");
+        
          
         // l.FileChooser();
          
@@ -347,28 +347,10 @@ public class GUI extends Application {
 			}
 			*/
 		    return path;
-		    }
-    
-    public void test () {
-    	System.out.println("test");
     }
-   
-    public static void main(String[] args) {
-	//GUI g = new GUI();
-//	Library l = new Library();
-//	try {
-//		l.GetAllFiles("/Users/naveen/Desktop/Test1");
-//	} catch (IOException e) {
-//		// TODO Auto-generated catch block
-//		e.printStackTrace();
-//	}
-	
-   // g.playQue("/Users/naveen/Desktop/Test1/note2.wav");
-	
+		    
+    public static void main (String[] args) {
     	launch(args);
-    
-
     }
-
-
+    
 }

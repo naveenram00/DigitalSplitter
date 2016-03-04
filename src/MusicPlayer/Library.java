@@ -61,8 +61,7 @@ public class Library {
 //		}
 		
 		
-		g.test();
-		g.playQue("/Users/naveen/Desktop/Test1/note2.wav");
+
 		
 		
 		
@@ -135,10 +134,10 @@ public class Library {
 		//String s = l.FileChooser();
 		//l.FileChooser();
 		
-		g.launch(g.getClass());
+		
 		//l.GetAllFiles("/Users/naveen/Desktop/Test1");
 		//"/Users/naveen/Desktop/Test1"
-		l.PlayQue();
+		l.FileChooser();
 		
 	}
 }
