@@ -1,8 +1,10 @@
 import javafx.application.*;
+import javafx.application.Preloader.StateChangeNotification;
 import javafx.beans.value.*;
 import javafx.collections.*;
 import javafx.event.*;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
@@ -17,10 +19,13 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.*;
 
+import com.sun.javafx.scene.control.skin.FXVK.Type;
+import com.sun.prism.paint.Color;
+
 /** Example of playing all audio files in a given directory. */
 public class AudioPlaylist extends Application {
 	
-	private static final String MUSIC_DIR = "/Users/naveen/Desktop/Test1/note2.wav";
+	private static final String MUSIC_DIR = "/Users/naveen/Music/iTunes/iTunes Media/Music/Blue Oyester Cult/The Heavy Metal Boxset/Godzilla";
 	public static final String TAG_COLUMN_NAME = "Tag";
 	public static final String VALUE_COLUMN_NAME = "Value";
 	public static final List<String> SUPPORTED_FILE_EXTENSIONS = Arrays.asList(".mp3", ".m4a", ".wav");
@@ -36,6 +41,12 @@ public class AudioPlaylist extends Application {
 
   public void start(final Stage stage) throws Exception {
     stage.setTitle("Simple Audio Player");
+    
+//    Stage splash = new Stage();
+//    splash.setTitle("Loading");
+//    splash.setScene(new Scene(new Group(), 260, 230, javafx.scene.paint.Color.LIGHTCYAN));
+//    splash.show();
+    
 
     // determine the source directory for the playlist (either the first argument to the program or a default).
     final List<String> params = getParameters().getRaw();
@@ -207,6 +218,10 @@ public class AudioPlaylist extends Application {
     stage.setScene(scene);
     stage.show();
   }
+  
+
+  
+  
 
   /** sets the currently playing label to the label of the new media player and updates the progress monitor. */
   private void setCurrentlyPlaying(final MediaPlayer newPlayer) {
@@ -226,6 +241,7 @@ public class AudioPlaylist extends Application {
     currentlyPlaying.setText("Now Playing: " + source);
 
     setMetaDataDisplay(newPlayer.getMedia().getMetadata());
+    
   }
 
   private void setMetaDataDisplay(ObservableMap<String, Object> metadata) {
@@ -265,4 +281,6 @@ public class AudioPlaylist extends Application {
     });
     return player;
   }
+  
+  
 }
