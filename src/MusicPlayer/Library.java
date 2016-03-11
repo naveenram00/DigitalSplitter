@@ -22,8 +22,8 @@ public class Library {
 	public String path;
 	private Queue SongQue = new Queue(20);
 	private Queue PathQue = new Queue(10);
-	public GUI g = new GUI();
-	public Library l = new Library();
+	//public GUI g = new GUI();
+	//public Library l = new Library();
 	
 	
 	public Library() {
@@ -47,7 +47,6 @@ public class Library {
 	    		}
 	    	}
 	    
-	    l.PlayQue();
 	    }
 	
 	public void PlayQue() {
@@ -64,7 +63,7 @@ public class Library {
 
 		
 		
-		
+		/*
 		
 		for (int i = 0; i < AllSongs.stackSize; i++) {
 			g.playQue(AllSongs.peek());
@@ -78,10 +77,10 @@ public class Library {
 			
 			
 		}
-		
+		*/
 	}
 	
-	public String FileChooser() {
+	public void FileChooser() {
 		 JFrame.setDefaultLookAndFeelDecorated(true);
 		    JDialog.setDefaultLookAndFeelDecorated(true);
 		    JFrame frame = new JFrame("JComboBox Test");
@@ -109,21 +108,12 @@ public class Library {
 		    frame.pack();
 		    frame.setVisible(true);
 		    PathQue.displayTheStack();
-		    System.out.println(path);
 		    
-		    try {
-				GetAllFiles(path);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		    return path;
-		    }
+	}
 	
 	 
 	public static void main(String [] args) throws IOException{
-		GUI g = new GUI();
+		
 		
 		
 		
