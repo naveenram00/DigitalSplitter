@@ -1,133 +1,65 @@
 package MusicPlayer;
 
 import javafx.application.*;
-import javafx.application.Preloader.StateChangeNotification;
 import javafx.beans.value.*;
 import javafx.collections.*;
 import javafx.event.*;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.media.*;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.*;
-
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-
-import com.sun.javafx.scene.control.skin.FXVK.Type;
-import com.sun.prism.paint.Color;
 
 /** Example of playing all audio files in a given directory. */
 public class AudioPlaylist extends Application {
 	
-	private static String directory = "/Users/naveen/Music/iTunes/iTunes Media/Music/ArtOfficial/Unknown Album";
+	
+	ArrayList<String> paths = new ArrayList<String>();
+	ArrayList<String> songs = new ArrayList<String>();
+	ArrayList<String> artists = new ArrayList<String>();
+	
+	private static final String MUSIC_DIR = "/Users/naveen/Music/iTunes/iTunes Media/Music";
 	public static final String TAG_COLUMN_NAME = "Tag";
 	public static final String VALUE_COLUMN_NAME = "Value";
-	public static final List<String> SUPPORTED_FILE_EXTENSIONS = Arrays.asList(".mp3", ".m4a", ".wav");
-  	public static final int FILE_EXTENSION_LEN = 3;
-  	public static final String APPLICATION_ICON =
-            "http://cdn1.iconfinder.com/data/icons/Copenhagen/PNG/32/people.png";
-    public static final String SPLASH_IMAGE =
-            "http://fxexperience.com/wp-content/uploads/2010/06/logo.png";
+	public static final List<String> SUPPORTED_FILE_EXTENSIONS = Arrays.asList(".mp3", ".m4a");
+	public static final int FILE_EXTENSION_LEN = 3;
 
-    private Pane splashLayout;
-    private ProgressBar loadProgress;
-    private Label progressText;
-    private Stage mainStage;
-    private static final int SPLASH_WIDTH = 676;
-    private static final int SPLASH_HEIGHT = 227;
+	final Label currentlyPlaying = new Label();
+	final ProgressBar progress = new ProgressBar();
+	final TableView<Map> metadataTable = new TableView<>();
+	private ChangeListener<Duration> progressChangeListener;
+	private MapChangeListener<String, Object> metadataChangeListener;
 
-  	final Label currentlyPlaying = new Label();
-  	final ProgressBar progress = new ProgressBar();
-  	final TableView<Map> metadataTable = new TableView<>();
-  	private ChangeListener<Duration> progressChangeListener;
-  	private MapChangeListener<String, Object> metadataChangeListener;
-
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws Exception { 
+	 
+	  //launch(args); // "/Users/naveen/Desktop/Library1"
 	  
-	  launch(args); 
+	  AudioPlaylist a = new AudioPlaylist();
+	  a.GetAllFiles("/Users/naveen/Music/iTunes/iTunes Media/Music");
+	  System.out.println(a.songs.get(700));
+	  System.out.println(a.artists.get(700));
 	  
-	  }
-  public void init() {
-//	  Stage splash = new Stage();
-//	  Circle circ = new Circle(40, 40, 30);
-//      Group root = new Group(circ);
-//      Scene scene = new Scene(root, 400, 300);
-//
-//      splash.setTitle("My JavaFX Application");
-//      splash.setScene(scene);
-//      splash.show();
-	  
-	  
-	  JFrame frame = new JFrame();
-	  frame.setSize(1000, 500);
-	  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	  
-	  JPanel panel = new JPanel();
-	  panel.setPreferredSize(new Dimension (200, 100));
-	  
-	  JTextArea text = new JTextArea();
-	  text.setText("S P L A S H");
-	  
-	  panel.add(text);
-	  
-	  JButton button = new JButton("Select File");
-	    button.addActionListener(new ActionListener() {
-	    	
-	      public void actionPerformed(ActionEvent ae) {
-	        JFileChooser fileChooser = new JFileChooser();
-	        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-	        
-	        int returnValue = fileChooser.showOpenDialog(null);
-	        if (returnValue == JFileChooser.APPROVE_OPTION) {
-	          File selectedFile = fileChooser.getSelectedFile();
-	          
-	         
-	         
-	          }
-	        }
-	      }
-	    );
-	    panel.add(button);
-	    frame.pack();
-	    
-	  frame.add(panel);
-	  frame.setVisible(true);
   
   }
-	 
+
   public void start(final Stage stage) throws Exception {
     stage.setTitle("Simple Audio Player");
-/*    
-    Stage splash = new Stage();
-    splash.setTitle("Loading");
-    splash.setScene(new Scene(new Group(), 260, 230, javafx.scene.paint.Color.LIGHTCYAN));
-    splash.show();
-    */
 
     // determine the source directory for the playlist (either the first argument to the program or a default).
     final List<String> params = getParameters().getRaw();
     final File dir = (params.size() > 0)
       ? new File(params.get(0))
-      : new File(directory);
+      : new File(MUSIC_DIR);
     if (!dir.exists() || !dir.isDirectory()) {
       System.out.println("Cannot find audio source directory: " + dir + " please supply a directory as a command line argument");
       Platform.exit();
@@ -151,7 +83,9 @@ public class AudioPlaylist extends Application {
       System.out.println("No audio found in " + dir);
       Platform.exit();
       return;
-    }    
+    }
+    
+    
     
     // create a view to show the mediaplayers.
     final MediaView mediaView = new MediaView(players.get(0));
@@ -174,7 +108,7 @@ public class AudioPlaylist extends Application {
     }
     
     // allow the user to skip a track.
-   /* skip.setOnAction(new EventHandler<ActionEvent>() {
+    skip.setOnAction(new EventHandler<ActionEvent>() {
       @Override public void handle(ActionEvent actionEvent) {
         final MediaPlayer curPlayer = mediaView.getMediaPlayer();
         curPlayer.currentTimeProperty().removeListener(progressChangeListener);
@@ -198,7 +132,7 @@ public class AudioPlaylist extends Application {
           play.setText("Pause");
         }
       }
-    });*/
+    });
 
     // display the name of the currently playing track.
     mediaView.mediaPlayerProperty().addListener(new ChangeListener<MediaPlayer>() {
@@ -294,9 +228,93 @@ public class AudioPlaylist extends Application {
     stage.show();
   }
   
+  public void GetAllFiles(String directory) throws IOException {
+		File f = new File(directory.toString()); // current directory
 
-  
-  
+	    File[] files = f.listFiles();
+	   
+	    
+	    for (File file : files) {
+	    	
+	    	
+	    	int beginArtist = 0;
+    		int endArtist = 0;
+    		int beginSong = 0;
+    		int endSong = 0;
+	    	
+	    	if (file.getCanonicalPath().toString().contains(".")) {
+	    		String filepath = file.getCanonicalPath().toString();
+	    		int slashCount = 0;
+	    		int Counter = 0;
+	    		
+	    		/*
+	    		for (int i = 0; i <= filepath.length()-1; i++) {
+	    			
+	    			String check = filepath.substring(i, i+1);
+	    			
+	    			if (check.equalsIgnoreCase("/")) {
+	    			
+	    				slashCount++;
+	    			
+	    		}
+	    	}
+	    		
+	    		for (int j = 0; j < filepath.length()-1; j++) {
+	    			
+	    			if (filepath.substring(j, j+1).equalsIgnoreCase("/")) {
+		    			
+	    				Counter++;
+	    				
+	    			
+	    		}
+	    			if (Counter == slashCount-3){
+	    				beginArtist = j+1;
+	    				
+	    			}
+	    			if (Counter == slashCount-2){
+	    				endArtist = j;
+	    				
+	    			}
+	    			
+	    		}
+	    		
+
+	    		for (int k = 0; k < filepath.length()-1; k++) {
+	    			
+	    			if (filepath.substring(k, k+1).equalsIgnoreCase("/")) {
+		    			
+	    				Counter++;
+	    				
+	    			
+	    		}
+	    			if (Counter == slashCount-3){
+	    				beginSong = k+1;
+	    				
+	    			}
+	    			if (Counter == slashCount-2){
+	    				endSong = k;
+	    				
+	    			}
+	    			
+	    		}
+	    		
+	    		
+	    		songs.add(filepath.substring(beginSong, filepath.length()-1));
+	    		artists.add(filepath.substring(beginArtist, endArtist));
+	    		*/
+	    		
+	    		//System.out.println("File: " + file.getCanonicalPath().toString());
+	    		paths.add(filepath);
+	    		artists.add(file.getParentFile().getParentFile().getName());
+	    		songs.add(file.getName());
+	    		
+	    	} else {
+	    	
+	    		GetAllFiles(file.getCanonicalPath().toString());
+	    		}
+	    	}
+	    
+	    }
 
   /** sets the currently playing label to the label of the new media player and updates the progress monitor. */
   private void setCurrentlyPlaying(final MediaPlayer newPlayer) {
@@ -316,7 +334,6 @@ public class AudioPlaylist extends Application {
     currentlyPlaying.setText("Now Playing: " + source);
 
     setMetaDataDisplay(newPlayer.getMedia().getMetadata());
-    
   }
 
   private void setMetaDataDisplay(ObservableMap<String, Object> metadata) {
@@ -356,6 +373,4 @@ public class AudioPlaylist extends Application {
     });
     return player;
   }
-  
-  
 }

@@ -21,7 +21,8 @@ public class AudioPlayer extends Application {
             "http://cdn1.iconfinder.com/data/icons/Copenhagen/PNG/32/people.png";
     public static final String SPLASH_IMAGE =
             "http://fxexperience.com/wp-content/uploads/2010/06/logo.png";
-
+    
+    
     private Pane splashLayout;
     private ProgressBar loadProgress;
     private Label progressText;
