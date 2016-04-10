@@ -36,8 +36,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 /** Example of playing all audio files in a given directory. */
 public class AudioPlaylist extends Application {
@@ -124,7 +126,7 @@ public class AudioPlaylist extends Application {
 	  chooseLibrary.setSize(150, 50);
 	  chooseLibrary.setVisible(true);
 	  try {
-	      Thread.sleep(5000);
+	      Thread.sleep(1000);
 	  } catch (InterruptedException e) {
 	      e.printStackTrace();
 	  }
@@ -137,10 +139,8 @@ public class AudioPlaylist extends Application {
 
   public void start(final Stage stage) throws Exception {
 	  final SwingNode swingNode = new SwingNode();
-      JPanel panel = new JPanel();
-      panel.setSize(400, 400);
-      panel.setVisible(true);
-      swingNode.setContent(panel);
+	  createAndSetSwingContent(swingNode);
+      
     stage.setTitle("Simple Audio Player");
 
     // determine the source directory for the playlist (either the first argument to the program or a default).
@@ -294,9 +294,9 @@ public class AudioPlaylist extends Application {
 
     // layout the scene.
     final StackPane layout = new StackPane();
-    layout.getChildren().add(swingNode);
+    
     layout.setStyle("-fx-background-color: cornsilk; -fx-font-size: 20; -fx-padding: 20; -fx-alignment: center;");
-
+    layout.getChildren().add(swingNode);
     final HBox progressReport = new HBox(10);
     progressReport.setAlignment(Pos.CENTER);
     progressReport.getChildren().setAll(skip, play, progress, mediaView);
@@ -354,6 +354,22 @@ public class AudioPlaylist extends Application {
 	    	}
 	    
 	    }
+  private void createAndSetSwingContent(final SwingNode swingNode) {
+      SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+        	  JPanel panel = new JPanel();
+              panel.setSize(400, 400);
+              panel.setLocation(10, 150);
+              panel.setVisible(true);
+              JTextArea queBox = new JTextArea();
+              queBox.setLocation(10, 150);
+              queBox.setText("test!!!!!!");
+              panel.add(queBox);
+              swingNode.setContent(panel);
+          }
+      });
+  }
 
   /** sets the currently playing label to the label of the new media player and updates the progress monitor. */
   private void setCurrentlyPlaying(final MediaPlayer newPlayer) {
